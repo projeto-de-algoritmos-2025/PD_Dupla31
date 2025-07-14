@@ -50,6 +50,20 @@ class JogoMochila:
             {"nome": "Cristal Mágico", "peso": 4, "valor": 12}
         ]
         
+        # Adicionar informações extras para cada item
+        self.descricoes_itens = [
+            "Essencial para energia durante a expedição",
+            "Fundamental para hidratação na ilha",
+            "Útil para várias situações de emergência",
+            "Pode salvar sua vida em momentos críticos",
+            "Muito valioso, mas pesado para carregar",
+            "Ajuda a navegar pela ilha desconhecida",
+            "Necessária para explorar cavernas escuras",
+            "Útil para escaladas e travessias",
+            "Orienta você na direção correta",
+            "Item místico com grande poder mágico"
+        ]
+        
         # Itens selecionados pelo jogador
         self.itens_selecionados = []
         
@@ -58,6 +72,10 @@ class JogoMochila:
         self.peso_jogador = 0
         self.valor_otimo = 0
         self.itens_otimos = []
+        
+        # Interface
+        self.item_hover = -1  # Item sobre o qual o mouse está
+        self.tempo_animacao = 0
         
     def executar(self):
         while self.executando:
@@ -96,9 +114,16 @@ class JogoMochila:
                 elif self.tela_atual == "jogo" and evento.key == pygame.K_0:
                     if len(self.itens) > 9:
                         self.alternar_item(9)
+            elif evento.type == pygame.MOUSEBUTTONDOWN:
+                if self.tela_atual == "jogo" and evento.button == 1:  # Clique esquerdo
+                    self.processar_clique_item(evento.pos)
+            elif evento.type == pygame.MOUSEMOTION:
+                if self.tela_atual == "jogo":
+                    self.item_hover = self.detectar_item_hover(evento.pos)
     
     def atualizar(self):
-        pass
+        # Atualizar animações
+        self.tempo_animacao += 1
     
     def desenhar(self):
         self.tela.fill(BRANCO)
@@ -177,11 +202,22 @@ class JogoMochila:
         for i, item in enumerate(self.itens):
             y_pos = y_inicial + i * 50
             
-            # Cor do item (selecionado ou não)
-            cor_fundo = VERDE if i in self.itens_selecionados else CINZA_CLARO
+            # Cor do item (selecionado, hover ou padrão)
+            if i in self.itens_selecionados:
+                cor_fundo = VERDE
+            elif i == self.item_hover:
+                cor_fundo = AMARELO
+            else:
+                cor_fundo = CINZA_CLARO
             
-            # Retângulo do item
+            # Retângulo do item com efeito de hover
             item_rect = pygame.Rect(100, y_pos, 1000, 40)
+            if i == self.item_hover:
+                # Efeito de pulsação no hover
+                offset = int(2 * abs(0.5 - (self.tempo_animacao % 60) / 60))
+                hover_rect = pygame.Rect(100 - offset, y_pos - offset, 1000 + 2*offset, 40 + 2*offset)
+                pygame.draw.rect(self.tela, AZUL, hover_rect)
+            
             pygame.draw.rect(self.tela, cor_fundo, item_rect)
             pygame.draw.rect(self.tela, PRETO, item_rect, 2)
             
@@ -202,14 +238,26 @@ class JogoMochila:
             valor = self.font_normal.render(f"Valor: {item['valor']}", True, PRETO)
             self.tela.blit(valor, (800, y_pos + 10))
             
+            # Relação valor/peso
+            relacao = item['valor'] / item['peso']
+            texto_relacao = f"V/P: {relacao:.1f}"
+            cor_relacao = VERDE if relacao >= 6 else AMARELO if relacao >= 4 else VERMELHO
+            relacao_surface = self.font_pequena.render(texto_relacao, True, cor_relacao)
+            self.tela.blit(relacao_surface, (950, y_pos + 15))
+            
             # Indicador de seleção
             if i in self.itens_selecionados:
                 check = self.font_normal.render("✓", True, VERDE)
                 self.tela.blit(check, (1050, y_pos + 10))
         
+        # Tooltip para item com hover
+        if self.item_hover != -1:
+            self.desenhar_tooltip(self.item_hover)
+        
         # Instruções
         instrucoes = [
-            "Pressione as teclas numéricas (1-9, 0) para selecionar/desselecionar itens",
+            "Pressione as teclas numéricas (1-9, 0) ou CLIQUE para selecionar/desselecionar itens",
+            "Passe o mouse sobre os itens para ver detalhes",
             "Pressione ENTER para confirmar sua escolha",
             "Pressione ESC para sair"
         ]
@@ -413,6 +461,75 @@ class JogoMochila:
                 w -= self.itens[i-1]["peso"]
         
         return valor_otimo, itens_otimos
+    
+    def detectar_item_hover(self, pos_mouse):
+        """Detecta sobre qual item o mouse está"""
+        mouse_x, mouse_y = pos_mouse
+        y_inicial = 180
+        
+        for i in range(len(self.itens)):
+            y_pos = y_inicial + i * 50
+            item_rect = pygame.Rect(100, y_pos, 1000, 40)
+            if item_rect.collidepoint(mouse_x, mouse_y):
+                return i
+        return -1
+    
+    def processar_clique_item(self, pos_mouse):
+        """Processa clique do mouse em um item"""
+        item_clicado = self.detectar_item_hover(pos_mouse)
+        if item_clicado != -1:
+            self.alternar_item(item_clicado)
+    
+    def desenhar_tooltip(self, indice_item):
+        """Desenha tooltip com informações do item"""
+        item = self.itens[indice_item]
+        descricao = self.descricoes_itens[indice_item]
+        
+        # Posição do tooltip
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        tooltip_x = mouse_x + 15
+        tooltip_y = mouse_y + 15
+        
+        # Ajustar posição se sair da tela
+        if tooltip_x + 350 > LARGURA:
+            tooltip_x = mouse_x - 365
+        if tooltip_y + 120 > ALTURA:
+            tooltip_y = mouse_y - 135
+        
+        # Fundo do tooltip
+        tooltip_rect = pygame.Rect(tooltip_x, tooltip_y, 350, 120)
+        pygame.draw.rect(self.tela, BRANCO, tooltip_rect)
+        pygame.draw.rect(self.tela, PRETO, tooltip_rect, 2)
+        
+        # Título do item
+        titulo = self.font_normal.render(item["nome"], True, AZUL)
+        self.tela.blit(titulo, (tooltip_x + 10, tooltip_y + 10))
+        
+        # Informações do item
+        info_linhas = [
+            f"Peso: {item['peso']}kg",
+            f"Valor: {item['valor']}",
+            f"Relação V/P: {item['valor']/item['peso']:.1f}",
+            f"Descrição: {descricao}"
+        ]
+        
+        y_pos = tooltip_y + 35
+        for linha in info_linhas:
+            # Quebrar linha longa da descrição
+            if linha.startswith("Descrição:") and len(linha) > 45:
+                palavras = linha.split(" ")
+                linha1 = " ".join(palavras[:6])
+                linha2 = " ".join(palavras[6:])
+                texto = self.font_pequena.render(linha1, True, PRETO)
+                self.tela.blit(texto, (tooltip_x + 10, y_pos))
+                y_pos += 20
+                if linha2:
+                    texto = self.font_pequena.render(linha2, True, PRETO)
+                    self.tela.blit(texto, (tooltip_x + 10, y_pos))
+            else:
+                texto = self.font_pequena.render(linha, True, PRETO)
+                self.tela.blit(texto, (tooltip_x + 10, y_pos))
+            y_pos += 20
 
 if __name__ == "__main__":
     jogo = JogoMochila()

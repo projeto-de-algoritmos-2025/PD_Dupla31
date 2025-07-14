@@ -40,6 +40,8 @@ Você é um aventureiro se preparando para uma expedição. Escolha sabiamente o
 
 **Tela do Jogo:**
 - Teclas 1-9 e 0: Selecionar/desselecionar itens
+- Clique do mouse: Selecionar/desselecionar itens
+- Hover do mouse: Ver detalhes dos itens
 - ENTER: Confirmar seleção e ver resultado
 - ESC: Sair do jogo
 
@@ -50,7 +52,10 @@ Você é um aventureiro se preparando para uma expedição. Escolha sabiamente o
 ### Funcionalidades
 
 - **Lista de Itens**: 10 itens disponíveis com diferentes pesos e valores
-- **Seleção Interativa**: Interface visual para selecionar itens
+- **Seleção Interativa**: Interface visual para selecionar itens (teclado ou mouse)
+- **Tooltips Informativos**: Hover do mouse mostra descrições detalhadas dos itens
+- **Indicadores Visuais**: Relação valor/peso colorida para cada item
+- **Efeitos de Hover**: Animações visuais para melhor experiência do usuário
 - **Validação de Peso**: Não permite exceder a capacidade da mochila
 - **Algoritmo Knapsack**: Calcula automaticamente a solução ótima usando programação dinâmica
 - **Sistema de Pontuação**: Compara sua escolha com a solução ótima
