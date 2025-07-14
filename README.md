@@ -1,6 +1,6 @@
 # Aventura do Mochileiro: O Desafio dos Recursos Limitados
 
-Um jogo educativo em Python que simula o problema da mochila 0/1 (0-1 Knapsack Problem) de forma interativa e divertida.
+Este programa é uma ferramenta educacional interativa que demonstra o funcionamento do algoritmo de programação dinâmica para o problema da mochila 0/1 (0-1 Knapsack Problem), apresentado como um jogo divertido onde o jogador deve escolher itens para uma expedição.
 
 ## Alunos
 |Matrícula | Aluno |
@@ -10,18 +10,21 @@ Um jogo educativo em Python que simula o problema da mochila 0/1 (0-1 Knapsack P
 
 ## Requisitos
 
-- Python 3.8+
-- pygame 2.5.2+
+- Python 3.8 ou superior
+- Bibliotecas necessárias (instale-as usando o arquivo requirements.txt)
 
 ## Instalação
 
-1. Clone o repositório
-2. Instale as dependências:
+1. Certifique-se de ter o Python instalado em seu sistema
+2. Instale as dependências necessárias:
+
 ```bash
 pip install -r requirements.txt
 ```
 
 ## Como Executar
+
+Execute o programa com o seguinte comando:
 
 ```bash
 python jogo_mochila.py
@@ -29,50 +32,38 @@ python jogo_mochila.py
 
 ## Como Usar
 
-### Objetivo
-Você é um aventureiro se preparando para uma expedição. Escolha sabiamente os itens para sua mochila (capacidade máxima: 15kg) para maximizar o valor total dos itens carregados.
+1. Na **tela do menu**, pressione ESPAÇO para começar o jogo
+2. Na **tela do jogo**:
+   - Use as teclas numéricas (1-9, 0) ou clique do mouse para selecionar/desselecionar itens
+   - Passe o mouse sobre os itens para ver descrições detalhadas nos tooltips
+   - Observe a barra de capacidade da mochila para não exceder 15kg
+   - Pressione ENTER para confirmar sua seleção
+3. Na **tela de resultado**:
+   - Compare sua escolha com a solução ótima calculada pelo algoritmo
+   - Veja sua eficiência e receba feedback sobre sua performance
+   - Pressione R para jogar novamente
 
-### Controles
+## Funcionalidades
 
-**Tela do Menu:**
-- ESPAÇO: Começar o jogo
-- ESC: Sair do jogo
+- Interface gráfica intuitiva com pygame
+- Seleção interativa de itens por teclado ou mouse
+- Tooltips informativos com descrições detalhadas dos itens
+- Indicadores visuais coloridos para relação valor/peso
+- Efeitos de hover e animações para melhor experiência
+- Validação em tempo real da capacidade da mochila
+- Algoritmo de programação dinâmica para cálculo da solução ótima
+- Sistema de pontuação com feedback educativo baseado na eficiência
 
-**Tela do Jogo:**
-- Teclas 1-9 e 0: Selecionar/desselecionar itens
-- Clique do mouse: Selecionar/desselecionar itens
-- Hover do mouse: Ver detalhes dos itens
-- ENTER: Confirmar seleção e ver resultado
-- ESC: Sair do jogo
+## Sobre o Algoritmo da Mochila 0/1
 
-**Tela de Resultado:**
-- R: Jogar novamente
-- ESC: Sair do jogo
-
-### Funcionalidades
-
-- **Lista de Itens**: 10 itens disponíveis com diferentes pesos e valores
-- **Seleção Interativa**: Interface visual para selecionar itens (teclado ou mouse)
-- **Tooltips Informativos**: Hover do mouse mostra descrições detalhadas dos itens
-- **Indicadores Visuais**: Relação valor/peso colorida para cada item
-- **Efeitos de Hover**: Animações visuais para melhor experiência do usuário
-- **Validação de Peso**: Não permite exceder a capacidade da mochila
-- **Algoritmo Knapsack**: Calcula automaticamente a solução ótima usando programação dinâmica
-- **Sistema de Pontuação**: Compara sua escolha com a solução ótima
-- **Feedback Visual**: Barras de progresso e indicadores coloridos
+O problema da mochila 0/1 é um problema clássico de otimização combinatória. Dado um conjunto de itens, cada um com um peso e valor, o objetivo é selecionar itens para colocar na mochila de forma a maximizar o valor total sem exceder a capacidade de peso. O algoritmo de programação dinâmica resolve este problema de forma eficiente, construindo uma tabela que considera todas as possíveis combinações de itens e capacidades.
 
 ## Observações
 
-- O jogo implementa o algoritmo de programação dinâmica para resolver o problema da mochila 0/1
-- A eficiência do jogador é calculada como: (valor_jogador / valor_otimo) * 100%
-- O jogo oferece feedback educativo baseado na performance do jogador
+A interface do jogo pode apresentar pequenas variações visuais dependendo do sistema operacional. O algoritmo está otimizado para a capacidade de 15kg e 10 itens, mas pode ser facilmente adaptado para outros valores.
 
 ## Screenshots
 
 *Screenshots serão adicionados em breve*
-
-## Outros
-
-Este projeto foi desenvolvido como parte da disciplina de Programação Avançada, focando na implementação prática do algoritmo de programação dinâmica para o problema da mochila 0/1.
 
 [Video Apresentação](link)
