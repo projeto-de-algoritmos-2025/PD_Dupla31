@@ -222,10 +222,147 @@ class JogoMochila:
             y_instrucao += 25
     
     def desenhar_resultado(self):
-        # Implementar na próxima etapa
-        texto = self.font_titulo.render("Tela de Resultado - Em Desenvolvimento", True, PRETO)
-        texto_rect = texto.get_rect(center=(LARGURA//2, ALTURA//2))
-        self.tela.blit(texto, texto_rect)
+        # Título
+        titulo = self.font_titulo.render("Resultado da Aventura", True, AZUL)
+        titulo_rect = titulo.get_rect(center=(LARGURA//2, 50))
+        self.tela.blit(titulo, titulo_rect)
+        
+        # Calcular porcentagem de eficiência
+        if self.valor_otimo > 0:
+            eficiencia = (self.valor_jogador / self.valor_otimo) * 100
+        else:
+            eficiencia = 0
+        
+        # Sua escolha (lado esquerdo)
+        pygame.draw.rect(self.tela, CINZA_CLARO, (50, 120, 500, 400))
+        pygame.draw.rect(self.tela, PRETO, (50, 120, 500, 400), 2)
+        
+        titulo_jogador = self.font_normal.render("SUA ESCOLHA", True, PRETO)
+        titulo_jogador_rect = titulo_jogador.get_rect(center=(300, 140))
+        self.tela.blit(titulo_jogador, titulo_jogador_rect)
+        
+        # Estatísticas do jogador
+        stats_jogador = [
+            f"Valor Total: {self.valor_jogador}",
+            f"Peso Total: {self.peso_jogador}kg / {self.capacidade_mochila}kg",
+            f"Itens Selecionados: {len(self.itens_selecionados)}"
+        ]
+        
+        y_pos = 170
+        for stat in stats_jogador:
+            texto = self.font_normal.render(stat, True, PRETO)
+            self.tela.blit(texto, (70, y_pos))
+            y_pos += 30
+        
+        # Lista de itens do jogador
+        y_pos = 280
+        texto_itens = self.font_normal.render("Itens escolhidos:", True, PRETO)
+        self.tela.blit(texto_itens, (70, y_pos))
+        y_pos += 30
+        
+        for i in self.itens_selecionados:
+            item = self.itens[i]
+            item_texto = f"• {item['nome']} (Peso: {item['peso']}kg, Valor: {item['valor']})"
+            texto = self.font_pequena.render(item_texto, True, PRETO)
+            self.tela.blit(texto, (70, y_pos))
+            y_pos += 20
+        
+        # Solução ótima (lado direito)
+        pygame.draw.rect(self.tela, CINZA_CLARO, (650, 120, 500, 400))
+        pygame.draw.rect(self.tela, PRETO, (650, 120, 500, 400), 2)
+        
+        titulo_otimo = self.font_normal.render("SOLUÇÃO ÓTIMA", True, PRETO)
+        titulo_otimo_rect = titulo_otimo.get_rect(center=(900, 140))
+        self.tela.blit(titulo_otimo, titulo_otimo_rect)
+        
+        # Estatísticas da solução ótima
+        peso_otimo = sum(self.itens[i]["peso"] for i in self.itens_otimos)
+        stats_otimo = [
+            f"Valor Total: {self.valor_otimo}",
+            f"Peso Total: {peso_otimo}kg / {self.capacidade_mochila}kg",
+            f"Itens Selecionados: {len(self.itens_otimos)}"
+        ]
+        
+        y_pos = 170
+        for stat in stats_otimo:
+            texto = self.font_normal.render(stat, True, PRETO)
+            self.tela.blit(texto, (670, y_pos))
+            y_pos += 30
+        
+        # Lista de itens da solução ótima
+        y_pos = 280
+        texto_itens = self.font_normal.render("Itens da solução ótima:", True, PRETO)
+        self.tela.blit(texto_itens, (670, y_pos))
+        y_pos += 30
+        
+        for i in self.itens_otimos:
+            item = self.itens[i]
+            item_texto = f"• {item['nome']} (Peso: {item['peso']}kg, Valor: {item['valor']})"
+            texto = self.font_pequena.render(item_texto, True, PRETO)
+            self.tela.blit(texto, (670, y_pos))
+            y_pos += 20
+        
+        # Avaliação de desempenho
+        y_pos = 550
+        
+        # Eficiência
+        eficiencia_texto = f"Eficiência: {eficiencia:.1f}%"
+        cor_eficiencia = VERDE if eficiencia >= 90 else AMARELO if eficiencia >= 70 else VERMELHO
+        texto_eficiencia = self.font_normal.render(eficiencia_texto, True, cor_eficiencia)
+        texto_eficiencia_rect = texto_eficiencia.get_rect(center=(LARGURA//2, y_pos))
+        self.tela.blit(texto_eficiencia, texto_eficiencia_rect)
+        
+        # Feedback baseado na eficiência
+        y_pos += 40
+        if eficiencia >= 95:
+            feedback = "🎉 Perfeito! Você encontrou a solução ótima!"
+            cor_feedback = VERDE
+        elif eficiencia >= 85:
+            feedback = "👍 Excelente! Você chegou muito perto da solução ótima!"
+            cor_feedback = VERDE
+        elif eficiencia >= 70:
+            feedback = "✅ Bom trabalho! Você fez escolhas razoáveis."
+            cor_feedback = AMARELO
+        elif eficiencia >= 50:
+            feedback = "⚠️ Pode melhorar. Analise o valor vs peso dos itens."
+            cor_feedback = VERMELHO
+        else:
+            feedback = "❌ Tente novamente! Foque em itens com melhor relação valor/peso."
+            cor_feedback = VERMELHO
+        
+        texto_feedback = self.font_normal.render(feedback, True, cor_feedback)
+        texto_feedback_rect = texto_feedback.get_rect(center=(LARGURA//2, y_pos))
+        self.tela.blit(texto_feedback, texto_feedback_rect)
+        
+        # Barra de progresso da eficiência
+        y_pos += 60
+        barra_largura = 400
+        barra_altura = 20
+        barra_x = (LARGURA - barra_largura) // 2
+        
+        # Barra de fundo
+        pygame.draw.rect(self.tela, CINZA_CLARO, (barra_x, y_pos, barra_largura, barra_altura))
+        
+        # Barra de progresso
+        progresso_eficiencia = min(eficiencia / 100, 1.0)
+        cor_barra = VERDE if eficiencia >= 85 else AMARELO if eficiencia >= 70 else VERMELHO
+        pygame.draw.rect(self.tela, cor_barra, (barra_x, y_pos, int(barra_largura * progresso_eficiencia), barra_altura))
+        
+        # Contorno da barra
+        pygame.draw.rect(self.tela, PRETO, (barra_x, y_pos, barra_largura, barra_altura), 2)
+        
+        # Instruções
+        instrucoes = [
+            "Pressione R para jogar novamente",
+            "Pressione ESC para sair"
+        ]
+        
+        y_instrucao = 720
+        for instrucao in instrucoes:
+            texto = self.font_pequena.render(instrucao, True, PRETO)
+            texto_rect = texto.get_rect(center=(LARGURA//2, y_instrucao))
+            self.tela.blit(texto, texto_rect)
+            y_instrucao += 25
     
     def alternar_item(self, indice):
         """Alterna a seleção de um item"""
