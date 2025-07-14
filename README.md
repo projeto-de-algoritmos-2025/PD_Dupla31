@@ -64,6 +64,12 @@ A interface do jogo pode apresentar pequenas variações visuais dependendo do s
 
 ## Screenshots
 
-*Screenshots serão adicionados em breve*
+### Execução passo a passo
+![parte1](./img/parte1.png)
+
+![parte2](./img/parte2.png)
+
+![parte3](./img/parte3.png)
+
 
 [Video Apresentação](link)
