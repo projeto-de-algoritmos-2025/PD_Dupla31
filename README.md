@@ -72,4 +72,4 @@ A interface do jogo pode apresentar pequenas variações visuais dependendo do s
 ![parte3](./img/parte3.png)
 
 
-[Video Apresentação](link)
+[Video Apresentação](https://youtu.be/v2dP30-uWZU)
